@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
+    "outDir": ".tmp-git-dev",
+    "rootDir": "."
+  },
+  "include": ["*.ts", "scripts/*.ts"]
+}

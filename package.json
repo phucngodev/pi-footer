@@ -1,0 +1,64 @@
+{
+  "name": "pi-footer",
+  "version": "0.2.2",
+  "description": "A polished input surface extension for pi, with a rounded multiline editor and inline model/context/status footer.",
+  "keywords": [
+    "extension",
+    "input-surface",
+    "pi",
+    "pi-coding-agent",
+    "pi-package",
+    "statusline",
+    "terminal",
+    "tui"
+  ],
+  "homepage": "https://github.com/phucngodev/pi-footer#readme",
+  "bugs": {
+    "url": "https://github.com/phucngodev/pi-footer/issues"
+  },
+  "license": "MIT",
+  "author": "phucngodev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phucngodev/pi-footer.git"
+  },
+  "files": [
+    "*.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build:dev": "rm -rf .tmp-git-dev && tsc -p tsconfig.test.json",
+    "test:git": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-git.js && node .tmp-git-dev/scripts/test-git-refresher.js && node .tmp-git-dev/scripts/test-state-git.js && node .tmp-git-dev/scripts/test-render-git.js",
+    "test:format": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-format.js && node .tmp-git-dev/scripts/test-render-model.js && node .tmp-git-dev/scripts/test-render-context.js",
+    "test:editor": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-render-editor.js",
+    "test:pane": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-pane.js",
+    "test:engine": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-engine.js",
+    "test:config": "npm run build:dev --silent && node .tmp-git-dev/scripts/test-config.js",
+    "test": "npm run test:git && npm run test:format && npm run test:editor && npm run test:pane && npm run test:engine && npm run test:config",
+    "debug:git": "npm run build:dev --silent && node .tmp-git-dev/scripts/debug-git.js",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-coding-agent": "*",
+    "@mariozechner/pi-tui": "*",
+    "@types/node": "^25.6.0",
+    "typescript": "*"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-coding-agent": "*",
+    "@mariozechner/pi-tui": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
