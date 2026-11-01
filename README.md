@@ -94,7 +94,7 @@ The config file at `~/.pi/agent/pi-footer/config.json` is flat too, so it can be
   "enabled": true,
   "theme": "light",
   "icons": "plain",
-  "minContentRows": 2,
+  "minContentRows": 1,
   "adaptive": true,
   "showProvider": "auto",
   "showModelIcon": false,

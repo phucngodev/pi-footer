@@ -37,8 +37,9 @@ const tui = { terminal: { rows: 40 }, requestRender() {} };
 const theme = { borderColor: (text: string) => text };
 const keybindings = { matches: () => false };
 
-function renderEditorWidth(text: string, width = 60): string[] {
+function renderEditorWidth(text: string, width = 60, minRows = 1): string[] {
   const config = defaultConfig();
+  config.minContentRows = minRows;
   const editor = new FooterEditor(
     tui as never,
     theme as never,
@@ -74,8 +75,15 @@ for (const line of lines) {
 
 // An empty prompt still shows the glyph on the first content row.
 const emptyBody = renderEditorWidth("").slice(1, -1).map(plain);
+assert.equal(emptyBody.length, 1, "empty prompt keeps a single row at the default");
 assert.equal(emptyBody[0], "│›                                                         │");
-assert.equal(emptyBody[1], "│                                                          │");
+
+// Raising the minimum pads the box with blank rows below the glyph.
+const paddedBody = renderEditorWidth("", 60, 3).slice(1, -1).map(plain);
+assert.equal(paddedBody.length, 3, "min rows pad the box");
+assert.equal(paddedBody[0], "│›                                                         │");
+assert.equal(paddedBody[1], "│                                                          │");
+assert.equal(paddedBody[2], "│                                                          │");
 
 // Exactly one gap column separates the glyph from the text.
 assert.equal(body[0]!.indexOf("hello"), body[0]!.indexOf("›") + 2, "one gap after the glyph");

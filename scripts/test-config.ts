@@ -32,7 +32,7 @@ for (const legacyKey of ["editor", "display", "git", "model"]) {
     `defaults have no nested "${legacyKey}" group`,
   );
 }
-assert.equal(defaults.minContentRows, 2, "default min content rows");
+assert.equal(defaults.minContentRows, 1, "default min content rows");
 assert.equal(defaults.gitPollIntervalMs, 5000, "default git poll interval");
 assert.deepEqual(defaults.segments, ["context", "speed"], "default segments");
 

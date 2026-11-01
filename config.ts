@@ -34,7 +34,7 @@ export function defaultConfig(): FooterConfig {
     enabled: true,
     theme: "light",
     icons: "plain",
-    minContentRows: 2,
+    minContentRows: 1,
     adaptive: true,
     showProvider: "auto",
     showModelIcon: false,
@@ -134,7 +134,7 @@ function normalizeConfig(raw: unknown): FooterConfig {
     minContentRows: parseIntInRange(
       pick(record.minContentRows, editor, "minContentRows", defaults.minContentRows),
       defaults.minContentRows,
-      2,
+      1,
       4,
     ),
     adaptive: parseBool(pick(record.adaptive, display, "adaptive", defaults.adaptive), defaults.adaptive),

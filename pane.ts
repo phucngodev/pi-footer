@@ -55,7 +55,7 @@ interface PaneColors {
   success: Tone;
 }
 
-const ROW_VALUES = [2, 3, 4] as const;
+const ROW_VALUES = [1, 2, 3, 4] as const;
 const POLL_INTERVALS = [2000, 5000, 10000, 30000] as const;
 
 function nextIn<T extends string>(current: T, values: readonly T[]): T {

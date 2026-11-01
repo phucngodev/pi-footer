@@ -189,7 +189,7 @@ export function renderInputSurface(
 ): string[] {
   const safeWidth = Math.max(4, width);
   const innerWidth = Math.max(0, safeWidth - 2);
-  const minRows = Math.max(2, Math.min(4, config.minContentRows));
+  const minRows = Math.max(1, config.minContentRows);
   const contentLines = options.contentLines ?? [""];
   const rows = Math.max(minRows, contentLines.length);
   // Hide the workspace name from the top left corner
