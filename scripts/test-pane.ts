@@ -139,7 +139,7 @@ async function assertSegmentToggle(): Promise<void> {
   assert.equal(saved.action, "save");
   assert.deepEqual(
     saved.action === "save" ? saved.config.segments : undefined,
-    ["context", "speed", "git"],
+    ["context", "speed", "sandbox", "git"],
     "toggling Git appends it to the segment list",
   );
 }
@@ -157,7 +157,7 @@ async function assertSegmentReorder(): Promise<void> {
   assert.equal(saved.action, "save");
   assert.deepEqual(
     saved.action === "save" ? saved.config.segments : undefined,
-    ["speed", "context"],
+    ["speed", "context", "sandbox"],
     "K moves the segment to the front",
   );
 }

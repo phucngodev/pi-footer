@@ -1,6 +1,6 @@
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 import { ICONS, PALETTES, fg } from "./palette.ts";
-import { SEGMENT_BY_ID, renderSegment } from "./segments.ts";
+import { LEADING_SEGMENT_IDS, SEGMENT_BY_ID, renderSegment } from "./segments.ts";
 import type {
   FooterConfig,
   FooterPalette,
@@ -61,8 +61,10 @@ function renderEnabledSegments(
     showModelIcon: config.showModelIcon,
   };
   const rendered: SegmentRenderResult[] = [];
-  // config.segments is the ordered list of enabled segment ids.
+  // config.segments is the ordered list of enabled segment ids. Leading
+  // segments are pinned to the title, so they never join the status group.
   for (const id of config.segments) {
+    if (LEADING_SEGMENT_IDS.has(id)) continue;
     const definition = SEGMENT_BY_ID.get(id);
     if (!definition) continue;
     const result = renderSegment(ctx, definition);
@@ -76,6 +78,36 @@ function joinSegments(palette: FooterPalette, segments: SegmentRenderResult[]): 
   return `${segments
     .map((segment) => applyInlineSegmentStyle(segment, palette, segment.text))
     .join(fg(palette.separator, " · "))}${RESET}`;
+}
+
+/**
+ * Render segments pinned to the top border right after the workspace title.
+ * They live outside the right-aligned status group, so they are excluded from
+ * renderEnabledSegments and are never dropped by width fitting.
+ */
+export function renderLeadingSegments(
+  state: FooterState,
+  config: FooterConfig,
+  widthMode: WidthMode = "full",
+): string {
+  const palette = PALETTES[config.theme];
+  const ctx: SegmentRenderContext = {
+    state,
+    config,
+    widthMode,
+    icons: ICONS[config.icons],
+    showProvider: false,
+    showModelIcon: config.showModelIcon,
+  };
+  const rendered: SegmentRenderResult[] = [];
+  for (const id of config.segments) {
+    if (!LEADING_SEGMENT_IDS.has(id)) continue;
+    const definition = SEGMENT_BY_ID.get(id);
+    if (!definition) continue;
+    const result = renderSegment(ctx, definition);
+    if (result) rendered.push(result);
+  }
+  return joinSegments(palette, rendered);
 }
 
 function fitSegments(
@@ -195,7 +227,19 @@ export function renderInputSurface(
   // Hide the workspace name from the top left corner
   const rawTitle = options.showTitle === false ? "" : "";
   const title = "";
-  const statusBudget = Math.max(0, innerWidth - (title ? visibleWidth(title) + 3 : 1));
+  // The sandbox badge is pinned after the title, before the right-aligned stats.
+  const leading = renderLeadingSegments(state, config);
+  const leadingWidth = visibleWidth(leading);
+  const leadingGap = leading ? " " : "";
+  const leadingTrail = leading ? " " : "";
+  const statusBudget = Math.max(
+    0,
+    innerWidth -
+      (title ? visibleWidth(title) + 3 : 1) -
+      visibleWidth(leadingGap) -
+      leadingWidth -
+      visibleWidth(leadingTrail),
+  );
   const status = renderFooterLine(state, config, statusBudget, state.providers.availableCount);
   const statusWidth = visibleWidth(status);
   const leftTitle = title
@@ -209,13 +253,16 @@ export function renderInputSurface(
     0,
     innerWidth -
       leftTitleWidth -
+      visibleWidth(leadingGap) -
+      leadingWidth -
+      visibleWidth(leadingTrail) -
       visibleWidth(gap) -
       statusWidth -
       visibleWidth(rightGap) -
       visibleWidth(rightCap),
   );
 
-  const top = `${borderColor(config, "╭")}${leftTitle}${borderColor(config, "─".repeat(fillerWidth))}${gap}${status}${rightGap}${rightCap}${borderColor(config, "╮")}`;
+  const top = `${borderColor(config, "╭")}${leftTitle}${leadingGap}${leading}${leadingTrail}${borderColor(config, "─".repeat(fillerWidth))}${gap}${status}${rightGap}${rightCap}${borderColor(config, "╮")}`;
   const lines = [truncateToWidth(top, safeWidth, borderColor(config, "…"))];
   for (let i = 0; i < rows; i++) {
     const raw = contentLines[i] ?? "";

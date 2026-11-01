@@ -7,7 +7,7 @@ import {
   type TUI,
 } from "@mariozechner/pi-tui";
 import { PALETTES, fg } from "./palette.ts";
-import { renderFooterLine } from "./renderer.ts";
+import { renderFooterLine, renderLeadingSegments } from "./renderer.ts";
 import { stripControls } from "./format.ts";
 import type { FooterConfig, FooterState } from "./types.ts";
 
@@ -148,8 +148,19 @@ export class FooterEditor extends CustomEditor {
           : BORDER.horizontal);
     const titleWidth = visibleWidth(titleToken);
 
-    // Status budget leaves room for: leading space, trailing space, and a right cap rail.
-    const statusBudget = Math.max(0, innerWidth - titleWidth - 3);
+    // Status budget leaves room for: leading badge, leading space, trailing space, and a right cap rail.
+    let leading = renderLeadingSegments(this.getState(), config);
+    if (!isFocused && leading) {
+      const palette = PALETTES[config.theme];
+      leading = fg(palette.dim, stripControls(leading));
+    }
+    const leadingWidth = visibleWidth(leading);
+    const leadingGap = leading ? " " : "";
+    const leadingTrail = leading ? " " : "";
+    const statusBudget = Math.max(
+      0,
+      innerWidth - titleWidth - visibleWidth(leadingGap) - leadingWidth - visibleWidth(leadingTrail) - 3,
+    );
     let status = this.renderStatus(statusBudget);
 
     if (!isFocused && status) {
@@ -165,6 +176,9 @@ export class FooterEditor extends CustomEditor {
       0,
       innerWidth -
         titleWidth -
+        visibleWidth(leadingGap) -
+        leadingWidth -
+        visibleWidth(leadingTrail) -
         visibleWidth(leftGap) -
         statusWidth -
         visibleWidth(rightGap) -
@@ -179,7 +193,7 @@ export class FooterEditor extends CustomEditor {
           ? this.border(titleToken, isFocused)
           : `${this.border(BORDER.horizontal, isFocused)}${this.title(titleText, isFocused)}`;
 
-    return `${this.border(BORDER.topLeft, isFocused)}${titleLine}${this.border(BORDER.horizontal.repeat(fillerWidth), isFocused)}${leftGap}${status}${rightGap}${this.border(rightCap, isFocused)}${this.border(BORDER.topRight, isFocused)}`;
+    return `${this.border(BORDER.topLeft, isFocused)}${titleLine}${leadingGap}${leading}${leadingTrail}${this.border(BORDER.horizontal.repeat(fillerWidth), isFocused)}${leftGap}${status}${rightGap}${this.border(rightCap, isFocused)}${this.border(BORDER.topRight, isFocused)}`;
   }
 
   private makeBottomBorder(width: number, original: string, isFocused: boolean): string {

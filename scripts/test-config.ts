@@ -34,7 +34,7 @@ for (const legacyKey of ["editor", "display", "git", "model"]) {
 }
 assert.equal(defaults.minContentRows, 1, "default min content rows");
 assert.equal(defaults.gitPollIntervalMs, 5000, "default git poll interval");
-assert.deepEqual(defaults.segments, ["context", "speed"], "default segments");
+assert.deepEqual(defaults.segments, ["context", "speed", "sandbox"], "default segments");
 
 // Nested v2 config is migrated into flat keys.
 await writeJson(currentPath, {
@@ -108,26 +108,38 @@ await rm(currentPath);
 const fallback = await (await loadConfigModule("defaults")).loadConfig();
 assert.equal(fallback.theme, "light", "default theme when no config exists");
 assert.equal(fallback.icons, "plain", "default icons when no config exists");
-assert.deepEqual(fallback.segments, ["context", "speed"], "default segments when none exist");
+assert.deepEqual(fallback.segments, ["context", "speed", "sandbox"], "default segments when none exist");
 
 // Mutation helpers keep the flat list consistent.
 const toggled = toggleSegment(defaults, "git");
-assert.deepEqual(toggled.segments, ["context", "speed", "git"], "toggle appends a hidden segment");
+assert.deepEqual(toggled.segments, ["context", "speed", "sandbox", "git"], "toggle appends a hidden segment");
 assert.equal(toggled.toggleAllEnabled, false, "manual toggle clears the all-segments flag");
-assert.deepEqual(toggleSegment(toggled, "git").segments, ["context", "speed"], "toggle removes it again");
+assert.deepEqual(
+  toggleSegment(toggled, "git").segments,
+  ["context", "speed", "sandbox"],
+  "toggle removes it again",
+);
 
 const reordered = moveSegment(toggled, "git", -1);
-assert.deepEqual(reordered.segments, ["context", "git", "speed"], "move swaps neighbours");
+assert.deepEqual(
+  reordered.segments,
+  ["context", "speed", "git", "sandbox"],
+  "move swaps neighbours",
+);
 assert.deepEqual(moveSegment(toggled, "git", 1).segments, toggled.segments, "move past the end is a no-op");
 
 const allOff = applyToggleAll(defaults, false);
 assert.deepEqual(allOff.segments, [], "all-off hides every segment");
-assert.deepEqual(applyToggleAll(allOff, true).segments, ["context", "speed"], "all-on restores defaults");
+assert.deepEqual(
+  applyToggleAll(allOff, true).segments,
+  ["context", "speed", "sandbox"],
+  "all-on restores defaults",
+);
 
 // Cloning must not alias the segment array or custom names.
 const original = defaultConfig();
 const copy = toggleSegment(original, "git");
-assert.deepEqual(original.segments, ["context", "speed"], "source config is untouched");
+assert.deepEqual(original.segments, ["context", "speed", "sandbox"], "source config is untouched");
 
 await rm(agentDir, { recursive: true, force: true });
 console.log("✓ flat config, v2 migration and mutation checks passed");

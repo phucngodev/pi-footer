@@ -1,4 +1,4 @@
-export type SegmentId = "git" | "model" | "context" | "tokens" | "cost" | "speed";
+export type SegmentId = "git" | "model" | "context" | "tokens" | "cost" | "speed" | "sandbox";
 export type FooterThemeName = "light" | "dark";
 export type IconMode = "nerd" | "plain";
 export type WidthMode = "full" | "compact" | "minimal";

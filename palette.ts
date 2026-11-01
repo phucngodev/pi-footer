@@ -17,6 +17,7 @@ export const PALETTES: Record<FooterThemeName, FooterPalette> = {
       tokens: { fg: { r: 100, g: 116, b: 139 } },
       cost: { fg: { r: 154, g: 104, b: 20 } },
       speed: { fg: { r: 255, g: 215, b: 0 } }, // Gold/yellow for speed
+      sandbox: { fg: { r: 99, g: 102, b: 241 } }, // Indigo to stand apart from usage stats
     },
   },
   dark: {
@@ -35,6 +36,7 @@ export const PALETTES: Record<FooterThemeName, FooterPalette> = {
       tokens: { fg: { r: 156, g: 163, b: 175 } },
       cost: { fg: { r: 251, g: 191, b: 36 } },
       speed: { fg: { r: 255, g: 215, b: 0 } }, // Gold/yellow for speed
+      sandbox: { fg: { r: 165, g: 180, b: 252 } }, // Soft indigo for dark backgrounds
     },
   },
 };
@@ -47,6 +49,7 @@ export const ICONS: Record<IconMode, IconSet> = {
     tokens: "󰄨",
     cost: "󰈸",
     speed: "󰜎",
+    sandbox: "󰒃",
   },
   plain: {
     git: "git",
@@ -55,6 +58,8 @@ export const ICONS: Record<IconMode, IconSet> = {
     tokens: "tok",
     cost: "$",
     speed: "TPS",
+    // Empty so the plain-mode badge reads as just "sandbox".
+    sandbox: "",
   },
 };
 

@@ -17,10 +17,18 @@ const CONFIG_VERSION = 3 as const;
  * Segments enabled on a fresh install, in render order.
  * Users can reorder or hide them from the settings pane.
  */
-const DEFAULT_SEGMENTS: SegmentId[] = ["context", "speed"];
+const DEFAULT_SEGMENTS: SegmentId[] = ["context", "speed", "sandbox"];
 
 /** Every segment id in canonical render order. */
-export const SEGMENT_ORDER: SegmentId[] = ["git", "model", "cost", "context", "tokens", "speed"];
+export const SEGMENT_ORDER: SegmentId[] = [
+  "git",
+  "model",
+  "cost",
+  "context",
+  "tokens",
+  "speed",
+  "sandbox",
+];
 
 const SEGMENT_IDS = new Set<SegmentId>(SEGMENT_ORDER);
 const THEMES = new Set<FooterThemeName>(["light", "dark"]);

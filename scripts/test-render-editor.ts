@@ -88,4 +88,11 @@ assert.equal(paddedBody[2], "│                                                
 // Exactly one gap column separates the glyph from the text.
 assert.equal(body[0]!.indexOf("hello"), body[0]!.indexOf("›") + 2, "one gap after the glyph");
 
+// The sandbox badge is pinned right after the folder title, not in the stats.
+process.env.NONO_CAP_FILE = "/tmp/nono-cap.json";
+const sandboxTop = plain(renderEditorWidth("")[0]!);
+assert.ok(sandboxTop.startsWith("╭─ repo  sandbox"), `badge sits after folder: ${sandboxTop}`);
+assert.equal(visibleWidth(renderEditorWidth("")[0]!), 60, "sandbox row keeps width");
+delete process.env.NONO_CAP_FILE;
+
 console.log("✓ editor prompt marker checks passed");

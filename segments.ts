@@ -1,8 +1,10 @@
 import { formatCost, formatPercent, formatTokens } from "./format.ts";
+import { readSandboxStatus } from "./sandbox.ts";
 import { TokenSpeedEngine } from "./engine.ts";
 import type {
   SegmentData,
   SegmentDefinition,
+  SegmentId,
   SegmentRenderContext,
   SegmentRenderResult,
 } from "./types.ts";
@@ -170,6 +172,18 @@ const SEGMENTS: SegmentDefinition[] = [
       };
     },
   },
+  {
+    id: "sandbox",
+    label: "Sandbox",
+    collect() {
+      // Only an active nono session gets a badge; a bare shell stays clean and
+      // the segment disappears instead of advertising the absence of a sandbox.
+      if (!readSandboxStatus().active) return undefined;
+      return {
+        primary: "sandbox",
+      };
+    },
+  },
 ];
 
 export function renderSegment(
@@ -181,3 +195,10 @@ export function renderSegment(
 }
 
 export const SEGMENT_BY_ID = new Map(SEGMENTS.map((segment) => [segment.id, segment]));
+
+/**
+ * Segments pinned to the top border right after the workspace title instead of
+ * the right-aligned status group. The sandbox badge belongs next to the folder
+ * because, like the folder, it describes the session rather than usage stats.
+ */
+export const LEADING_SEGMENT_IDS: ReadonlySet<SegmentId> = new Set<SegmentId>(["sandbox"]);

@@ -5,7 +5,7 @@
 **A calm input surface for [pi](https://github.com/badlogic/pi-mono)**
 
 Replace the default prompt with a rounded multiline editor
-and an inline status footer for model, context, tokens, cost, and Git.
+and an inline status footer for model, context, tokens, cost, Git, and the nono sandbox.
 
 [![npm](https://img.shields.io/npm/v/pi-footer?style=flat-square&color=blue)](https://www.npmjs.com/package/pi-footer)
 [![license](https://img.shields.io/badge/license-MIT-64748b?style=flat-square)](LICENSE)
@@ -60,7 +60,8 @@ That's the only command — opens a single flat settings list. Every option is o
 | --- | ------------------ | -------------------------------------------------------------------------------- |
 | 🖊️  | **Rounded editor** | Configurable 2 / 3 / 4 min rows, prompt `›` marker, preserves all pi defaults           |
 | 🏷️  | **Project title**  | Current folder name on the top-left border                                       |
-| 📊  | **Inline status**  | Model · context · tokens · cost · Git status — top-right                         |
+| 🔒  | **Sandbox badge**  | `sandbox` pinned right after the folder when Pi runs inside a nono sandbox          |
+| 📊  | **Inline status**  | Model · context · tokens · cost · Git — top-right                                |
 | ⚙️  | **`/footer` pane** | One flat settings list — ↑↓ to move, Enter to change, Save / Cancel            |
 | 💤  | **Dim unfocused**  | Surface quiets down when you scroll the chat                                     |
 | 🎨  | **Two themes**     | `light` and `dark` with tuned grey-green borders                                 |
@@ -99,7 +100,7 @@ The config file at `~/.pi/agent/pi-footer/config.json` is flat too, so it can be
   "showProvider": "auto",
   "showModelIcon": false,
   "showThinkingLevel": false,
-  "segments": ["context", "speed"],
+  "segments": ["context", "speed", "sandbox"],
   "customNames": {},
   "toggleAllEnabled": true,
   "gitShowDirty": true,
@@ -138,6 +139,21 @@ Git is collected asynchronously and cached. External file changes usually appear
 git status --short --branch
 npm run debug:git
 ```
+
+## Sandbox status
+
+The Sandbox segment shows a quiet `sandbox` badge when Pi runs inside a [nono](https://nono.sh) sandbox. Detection is driven by `NONO_CAP_FILE`, the capability manifest the outer sandbox exports: when it is absent the segment is hidden, so a bare shell stays clean.
+
+The badge is pinned to the top-left, right after the folder name, instead of the right-aligned stats:
+
+```text
+╭─ my-project  󰒃 sandbox ─────────────── ctx · speed ─╮
+```
+
+- `plain` icons render just `sandbox`.
+- `nerd` icons prefix a shield glyph: `󰒃 sandbox`.
+
+It is enabled by default and can be toggled in `/footer`. Because it is pinned, its position in the segment order does not change where it renders.
 
 ## Design
 
